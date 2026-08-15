@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "803175500602",
+    "project_id": "lequinthotel-ca6ef",
+    "storage_bucket": "lequinthotel-ca6ef.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:803175500602:android:f9639ce0144e41f78bde03",
+        "android_client_info": {
+          "package_name": "com.lequint.lequintmobile"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "803175500602-ft4uqg6eir7pu8i50e67jmnjh3aqqg3k.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD1RL_PzTDrvMjwu7iLPVrW0v0GYquVPNU"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "803175500602-ft4uqg6eir7pu8i50e67jmnjh3aqqg3k.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

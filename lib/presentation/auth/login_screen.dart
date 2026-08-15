@@ -58,25 +58,19 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
       child: Scaffold(
         backgroundColor: Colors.transparent,
         body: SafeArea(
-          child: authState is AuthInitial
-              ? const Center(
-                  child: CircularProgressIndicator(
-                    color: AppColors.accentPrimary,
-                  ),
-                )
-              : _LoginForm(
-                  formKey: _formKey,
-                  emailController: _emailController,
-                  passwordController: _passwordController,
-                  obscurePassword: _obscurePassword,
-                  onToggleObscure: () =>
-                      setState(() => _obscurePassword = !_obscurePassword),
-                  onSubmit: _submit,
-                  isLoading: authState is AuthLoading,
-                  errorMessage: authState is AuthError
-                      ? authState.error.message
-                      : null,
-                ),
+          child: _LoginForm(
+            formKey: _formKey,
+            emailController: _emailController,
+            passwordController: _passwordController,
+            obscurePassword: _obscurePassword,
+            onToggleObscure: () =>
+                setState(() => _obscurePassword = !_obscurePassword),
+            onSubmit: _submit,
+            isLoading: authState is AuthLoading,
+            errorMessage: authState is AuthError
+                ? authState.error.message
+                : null,
+          ),
         ),
       ),
     );

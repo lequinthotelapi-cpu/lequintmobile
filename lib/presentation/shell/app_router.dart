@@ -6,8 +6,12 @@ import '../../application/auth/auth_provider.dart';
 import '../../application/auth/auth_state.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
+import '../../domain/models/user.dart';
 import '../auth/login_screen.dart';
-import 'temporary_home_screen.dart';
+import 'app_shell.dart';
+import 'bottom_nav_config.dart';
+import 'placeholder_screen.dart';
+import 'splash_screen.dart';
 
 /// Puente entre el estado de Riverpod y el `refreshListenable` de GoRouter:
 /// notifica al router cada vez que cambia [authNotifierProvider] para que
@@ -18,41 +22,111 @@ class _AuthRefreshNotifier extends ChangeNotifier {
   }
 }
 
-/// Router mínimo para TASK-004: solo login + protección de rutas por
-/// estado de autenticación. TASK-005 reemplaza [AppRoutes.dashboard] por el
-/// `ShellRoute` con bottom nav y agrega el resto de las rutas del MVP sobre
-/// esta misma configuración.
+String _homeRouteForRole(UserRole role) =>
+    role == UserRole.housekeeper ? AppRoutes.myTasks : AppRoutes.dashboard;
+
+/// Guarda de acceso para las rutas raíz de cada pestaña del shell
+/// (SPEC-002, regla: "si un rol intenta acceder a una ruta no permitida →
+/// redirigir a su home"). Las subpantallas que se agreguen en TASKs
+/// futuras (detalle de reserva, cuenta, etc.) implementan su propia
+/// verificación de permisos según su propia SPEC.
+bool _roleCanAccessTabRoute(UserRole role, String route) {
+  switch (route) {
+    case AppRoutes.dashboard:
+      return role != UserRole.housekeeper;
+    case AppRoutes.frontDesk:
+      return role == UserRole.superadmin || role == UserRole.admin;
+    case AppRoutes.housekeepingOverview:
+      return role == UserRole.superadmin ||
+          role == UserRole.admin ||
+          role == UserRole.manager;
+    case AppRoutes.reports:
+      return role == UserRole.manager;
+    case AppRoutes.myTasks:
+      return role == UserRole.housekeeper;
+    case AppRoutes.arrivals:
+    case AppRoutes.departures:
+      // Lectura permitida también a manager (SPEC-006/007); solo
+      // housekeeper queda fuera.
+      return role != UserRole.housekeeper;
+    default:
+      return true;
+  }
+}
+
+String? _redirect(Ref ref, GoRouterState state) {
+  final authState = ref.read(authNotifierProvider);
+  final location = state.matchedLocation;
+  final isSplash = location == AppRoutes.splash;
+  final isLogin = location == AppRoutes.login;
+
+  switch (authState) {
+    case AuthInitial():
+      return isSplash ? null : AppRoutes.splash;
+    case AuthLoading():
+    case AuthUnauthenticated():
+    case AuthError():
+      return isLogin ? null : AppRoutes.login;
+    case AuthAuthenticated(:final user):
+      final home = _homeRouteForRole(user.role);
+      if (isSplash || isLogin) return home;
+      if (!_roleCanAccessTabRoute(user.role, location)) return home;
+      return null;
+  }
+}
+
+List<GoRoute> _moreMenuRoutes(UserRole role) => [
+  for (final item in moreMenuItemsForRole(role))
+    GoRoute(
+      path: item.route,
+      builder: (context, state) => PlaceholderScreen(title: item.label),
+    ),
+];
+
+StatefulShellRoute _shellRoute(UserRole role) {
+  final items = bottomNavItemsForRole(role);
+  return StatefulShellRoute.indexedStack(
+    builder: (context, state, navigationShell) =>
+        AppShell(navigationShell: navigationShell, role: role),
+    branches: [
+      for (final item in items)
+        StatefulShellBranch(
+          routes: [
+            GoRoute(
+              path: item.route,
+              builder: (context, state) => PlaceholderScreen(title: item.label),
+            ),
+          ],
+        ),
+    ],
+  );
+}
+
+/// El árbol de rutas se reconstruye cuando cambia el rol del usuario
+/// (null↔rol, o de un rol a otro) para que cada uno tenga exactamente las
+/// pestañas del shell que le corresponden (SPEC-002) — no un único árbol
+/// compartido con ítems ocultos. Esto solo ocurre en login/logout, una
+/// transición de navegación ya disruptiva de por sí.
 final appRouterProvider = Provider<GoRouter>((ref) {
   final refreshNotifier = _AuthRefreshNotifier(ref);
   ref.onDispose(refreshNotifier.dispose);
+  final role = ref.watch(currentUserRoleProvider);
 
   return GoRouter(
-    initialLocation: AppRoutes.login,
+    initialLocation: AppRoutes.splash,
     refreshListenable: refreshNotifier,
-    redirect: (context, state) {
-      final authState = ref.read(authNotifierProvider);
-      final isLoggingIn = state.matchedLocation == AppRoutes.login;
-
-      switch (authState) {
-        case AuthInitial():
-          return null;
-        case AuthAuthenticated():
-          return isLoggingIn ? AppRoutes.dashboard : null;
-        case AuthLoading():
-        case AuthUnauthenticated():
-        case AuthError():
-          return isLoggingIn ? null : AppRoutes.login;
-      }
-    },
+    redirect: (context, state) => _redirect(ref, state),
     routes: [
+      GoRoute(
+        path: AppRoutes.splash,
+        builder: (context, state) => const SplashScreen(),
+      ),
       GoRoute(
         path: AppRoutes.login,
         builder: (context, state) => const LoginScreen(),
       ),
-      GoRoute(
-        path: AppRoutes.dashboard,
-        builder: (context, state) => const TemporaryHomeScreen(),
-      ),
+      if (role != null) ..._moreMenuRoutes(role),
+      if (role != null) _shellRoute(role),
     ],
     errorBuilder: (context, state) => const ColoredBox(
       color: AppColors.backgroundSolid,

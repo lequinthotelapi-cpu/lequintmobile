@@ -2,6 +2,7 @@
 /// La configuración de GoRouter que consume estas constantes se implementa
 /// en TASK-005 (Shell y navegación).
 abstract final class AppRoutes {
+  static const splash = '/splash';
   static const login = '/login';
   static const dashboard = '/dashboard';
   static const rooms = '/rooms';
@@ -17,6 +18,15 @@ abstract final class AppRoutes {
   static const accountDetail = '/accounts/:id';
   static const notifications = '/notifications';
   static const profile = '/profile';
+
+  // Agregadas en TASK-005 para las pestañas del bottom nav (SPEC-002) que
+  // architecture.md no había enumerado: Recepción (admin/superadmin),
+  // Housekeeping — vista general (admin/superadmin/manager), Reportes
+  // (manager). No están respaldadas por una SPEC de contenido propia todavía
+  // — ver TASK-005 para el detalle de esta decisión.
+  static const frontDesk = '/front-desk';
+  static const housekeepingOverview = '/housekeeping';
+  static const reports = '/reports';
 
   static String roomDetailPath(String id) => '/rooms/$id';
   static String arrivalDetailPath(String id) => '/arrivals/$id';

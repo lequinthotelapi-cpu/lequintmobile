@@ -8,6 +8,8 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
 import '../../domain/models/user.dart';
 import '../auth/login_screen.dart';
+import '../front_desk/arrival_detail_screen.dart';
+import '../front_desk/arrivals_screen.dart';
 import '../housekeeping/complete_task_screen.dart';
 import '../housekeeping/my_tasks_screen.dart';
 import '../housekeeping/task_detail_screen.dart';
@@ -92,6 +94,8 @@ Widget _screenForTabRoute(String route, String label) {
   switch (route) {
     case AppRoutes.myTasks:
       return const MyTasksScreen();
+    case AppRoutes.arrivals:
+      return const ArrivalsScreen();
     default:
       return PlaceholderScreen(title: label);
   }
@@ -143,6 +147,12 @@ final appRouterProvider = Provider<GoRouter>((ref) {
       if (role != null) ..._moreMenuRoutes(role),
       // Rutas "push" fuera del shell (sin bottom nav) — igual que las de
       // "Más": pantallas de detalle/formulario, no pestañas persistentes.
+      if (role != null)
+        GoRoute(
+          path: AppRoutes.arrivalDetail,
+          builder: (context, state) =>
+              ArrivalDetailScreen(bookingId: state.pathParameters['id']!),
+        ),
       if (role != null)
         GoRoute(
           path: AppRoutes.taskDetail,

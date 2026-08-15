@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'core/constants/app_colors.dart';
 import 'core/constants/app_config.dart';
 import 'firebase_options.dart';
+import 'presentation/shell/app_router.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,12 +21,12 @@ Future<void> main() async {
   runApp(const ProviderScope(child: LeQuintApp()));
 }
 
-class LeQuintApp extends StatelessWidget {
+class LeQuintApp extends ConsumerWidget {
   const LeQuintApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
+  Widget build(BuildContext context, WidgetRef ref) {
+    return MaterialApp.router(
       title: AppConfig.appName,
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -37,42 +38,7 @@ class LeQuintApp extends StatelessWidget {
           brightness: Brightness.dark,
         ),
       ),
-      home: const _AppBootstrapScreen(),
-    );
-  }
-}
-
-/// Pantalla temporal de arranque — reemplazada por el shell con navegación
-/// por rol en TASK-005.
-class _AppBootstrapScreen extends StatelessWidget {
-  const _AppBootstrapScreen();
-
-  @override
-  Widget build(BuildContext context) {
-    return const DecoratedBox(
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [
-            AppColors.backgroundGradientTop,
-            AppColors.backgroundGradientBottom,
-          ],
-        ),
-      ),
-      child: Scaffold(
-        backgroundColor: Colors.transparent,
-        body: Center(
-          child: Text(
-            AppConfig.appName,
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 28,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ),
+      routerConfig: ref.watch(appRouterProvider),
     );
   }
 }

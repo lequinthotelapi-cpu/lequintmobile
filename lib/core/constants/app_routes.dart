@@ -15,6 +15,7 @@ abstract final class AppRoutes {
   static const myTasks = '/my-tasks';
   static const tasks = '/tasks';
   static const taskDetail = '/tasks/:id';
+  static const completeTask = '/tasks/:id/complete';
   static const accountDetail = '/accounts/:id';
   static const notifications = '/notifications';
   static const profile = '/profile';
@@ -32,5 +33,6 @@ abstract final class AppRoutes {
   static String arrivalDetailPath(String id) => '/arrivals/$id';
   static String departureDetailPath(String id) => '/departures/$id';
   static String taskDetailPath(String id) => '/tasks/$id';
+  static String completeTaskPath(String id) => '/tasks/$id/complete';
   static String accountDetailPath(String id) => '/accounts/$id';
 }

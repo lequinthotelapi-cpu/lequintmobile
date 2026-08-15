@@ -8,6 +8,9 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_routes.dart';
 import '../../domain/models/user.dart';
 import '../auth/login_screen.dart';
+import '../housekeeping/complete_task_screen.dart';
+import '../housekeeping/my_tasks_screen.dart';
+import '../housekeeping/task_detail_screen.dart';
 import 'app_shell.dart';
 import 'bottom_nav_config.dart';
 import 'placeholder_screen.dart';
@@ -83,6 +86,17 @@ List<GoRoute> _moreMenuRoutes(UserRole role) => [
     ),
 ];
 
+/// Pantalla real para las rutas ya implementadas; el resto sigue mostrando
+/// [PlaceholderScreen] hasta que su TASK correspondiente las construya.
+Widget _screenForTabRoute(String route, String label) {
+  switch (route) {
+    case AppRoutes.myTasks:
+      return const MyTasksScreen();
+    default:
+      return PlaceholderScreen(title: label);
+  }
+}
+
 StatefulShellRoute _shellRoute(UserRole role) {
   final items = bottomNavItemsForRole(role);
   return StatefulShellRoute.indexedStack(
@@ -94,7 +108,8 @@ StatefulShellRoute _shellRoute(UserRole role) {
           routes: [
             GoRoute(
               path: item.route,
-              builder: (context, state) => PlaceholderScreen(title: item.label),
+              builder: (context, state) =>
+                  _screenForTabRoute(item.route, item.label),
             ),
           ],
         ),
@@ -126,6 +141,20 @@ final appRouterProvider = Provider<GoRouter>((ref) {
         builder: (context, state) => const LoginScreen(),
       ),
       if (role != null) ..._moreMenuRoutes(role),
+      // Rutas "push" fuera del shell (sin bottom nav) — igual que las de
+      // "Más": pantallas de detalle/formulario, no pestañas persistentes.
+      if (role != null)
+        GoRoute(
+          path: AppRoutes.taskDetail,
+          builder: (context, state) =>
+              TaskDetailScreen(taskId: state.pathParameters['id']!),
+        ),
+      if (role != null)
+        GoRoute(
+          path: AppRoutes.completeTask,
+          builder: (context, state) =>
+              CompleteTaskScreen(taskId: state.pathParameters['id']!),
+        ),
       if (role != null) _shellRoute(role),
     ],
     errorBuilder: (context, state) => const ColoredBox(

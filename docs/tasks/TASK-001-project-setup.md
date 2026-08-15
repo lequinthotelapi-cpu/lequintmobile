@@ -3,7 +3,7 @@
 **ID**: TASK-001
 **SPEC**: N/A (fundación)
 **Dependencias**: Ninguna
-**Estado**: PENDING
+**Estado**: DONE
 
 ---
 

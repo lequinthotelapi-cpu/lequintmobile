@@ -27,6 +27,13 @@ abstract interface class GuestAccountRepository {
   /// Cuentas con `status == open` (para dashboard/listados).
   Stream<List<GuestAccount>> getOpenAccounts();
 
+  /// Todas las cuentas, sin filtrar — usado por el cálculo de ingresos del
+  /// período (TASK-007/SPEC-010, `calculateTotalRevenue` filtra
+  /// `status == closed` en el cliente). Es `Future` (no `Stream`): el
+  /// cálculo financiero no necesita tiempo real (ver SPEC-003
+  /// "Consideraciones técnicas").
+  Future<List<GuestAccount>> getAll();
+
   /// Agrega un cargo tipo `pos` de forma atómica (WriteBatch): añade el
   /// cargo a `guestAccount.charges`, recalcula subtotal/tax/total/balance,
   /// y decrementa `product.currentStock` por cada producto en [items].

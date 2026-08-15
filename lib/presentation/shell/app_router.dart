@@ -10,9 +10,20 @@ import '../../domain/models/user.dart';
 import '../auth/login_screen.dart';
 import '../front_desk/arrival_detail_screen.dart';
 import '../front_desk/arrivals_screen.dart';
+import '../front_desk/departure_detail_screen.dart';
+import '../front_desk/departures_screen.dart';
+import '../housekeeping/all_tasks_screen.dart';
 import '../housekeeping/complete_task_screen.dart';
 import '../housekeeping/my_tasks_screen.dart';
 import '../housekeeping/task_detail_screen.dart';
+import '../dashboard/dashboard_screen.dart';
+import '../guest_accounts/add_charge_screen.dart';
+import '../guest_accounts/guest_account_screen.dart';
+import '../notifications/notifications_screen.dart';
+import '../profile/profile_screen.dart';
+import '../reports/reports_screen.dart';
+import '../rooms/room_detail_screen.dart';
+import '../rooms/rooms_screen.dart';
 import 'app_shell.dart';
 import 'bottom_nav_config.dart';
 import 'placeholder_screen.dart';
@@ -46,7 +57,11 @@ bool _roleCanAccessTabRoute(UserRole role, String route) {
           role == UserRole.admin ||
           role == UserRole.manager;
     case AppRoutes.reports:
-      return role == UserRole.manager;
+      // SPEC-010: manager/admin/superadmin — TASK-005 solo había
+      // habilitado manager (única pestaña con acceso directo a Reportes).
+      return role == UserRole.superadmin ||
+          role == UserRole.admin ||
+          role == UserRole.manager;
     case AppRoutes.myTasks:
       return role == UserRole.housekeeper;
     case AppRoutes.arrivals:
@@ -84,7 +99,7 @@ List<GoRoute> _moreMenuRoutes(UserRole role) => [
   for (final item in moreMenuItemsForRole(role))
     GoRoute(
       path: item.route,
-      builder: (context, state) => PlaceholderScreen(title: item.label),
+      builder: (context, state) => _screenForTabRoute(item.route, item.label),
     ),
 ];
 
@@ -92,10 +107,24 @@ List<GoRoute> _moreMenuRoutes(UserRole role) => [
 /// [PlaceholderScreen] hasta que su TASK correspondiente las construya.
 Widget _screenForTabRoute(String route, String label) {
   switch (route) {
+    case AppRoutes.dashboard:
+      return const DashboardScreen();
     case AppRoutes.myTasks:
       return const MyTasksScreen();
+    case AppRoutes.housekeepingOverview:
+      return const AllTasksScreen();
     case AppRoutes.arrivals:
       return const ArrivalsScreen();
+    case AppRoutes.departures:
+      return const DeparturesScreen();
+    case AppRoutes.rooms:
+      return const RoomsScreen();
+    case AppRoutes.notifications:
+      return const NotificationsScreen();
+    case AppRoutes.reports:
+      return const ReportsScreen();
+    case AppRoutes.profile:
+      return const ProfileScreen();
     default:
       return PlaceholderScreen(title: label);
   }
@@ -121,6 +150,11 @@ StatefulShellRoute _shellRoute(UserRole role) {
   );
 }
 
+/// Navigator raíz, estable entre recreaciones de [appRouterProvider] — usado
+/// por [FCMService] (TASK-012) para navegar y mostrar el banner in-app sin
+/// depender de un `BuildContext` de pantalla.
+final rootNavigatorKey = GlobalKey<NavigatorState>(debugLabel: 'root');
+
 /// El árbol de rutas se reconstruye cuando cambia el rol del usuario
 /// (null↔rol, o de un rol a otro) para que cada uno tenga exactamente las
 /// pestañas del shell que le corresponden (SPEC-002) — no un único árbol
@@ -132,6 +166,7 @@ final appRouterProvider = Provider<GoRouter>((ref) {
   final role = ref.watch(currentUserRoleProvider);
 
   return GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: AppRoutes.splash,
     refreshListenable: refreshNotifier,
     redirect: (context, state) => _redirect(ref, state),
@@ -152,6 +187,30 @@ final appRouterProvider = Provider<GoRouter>((ref) {
           path: AppRoutes.arrivalDetail,
           builder: (context, state) =>
               ArrivalDetailScreen(bookingId: state.pathParameters['id']!),
+        ),
+      if (role != null)
+        GoRoute(
+          path: AppRoutes.roomDetail,
+          builder: (context, state) =>
+              RoomDetailScreen(roomId: state.pathParameters['id']!),
+        ),
+      if (role != null)
+        GoRoute(
+          path: AppRoutes.departureDetail,
+          builder: (context, state) =>
+              DepartureDetailScreen(bookingId: state.pathParameters['id']!),
+        ),
+      if (role != null)
+        GoRoute(
+          path: AppRoutes.accountDetail,
+          builder: (context, state) =>
+              GuestAccountScreen(accountId: state.pathParameters['id']!),
+        ),
+      if (role != null)
+        GoRoute(
+          path: AppRoutes.addCharge,
+          builder: (context, state) =>
+              AddChargeScreen(accountId: state.pathParameters['id']!),
         ),
       if (role != null)
         GoRoute(

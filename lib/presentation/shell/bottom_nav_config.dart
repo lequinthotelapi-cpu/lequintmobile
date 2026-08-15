@@ -126,8 +126,33 @@ bool hasMoreMenu(UserRole role) => role != UserRole.housekeeper;
 /// architecture.md — no se inventa aquí.
 List<NavItemConfig> moreMenuItemsForRole(UserRole role) {
   switch (role) {
+    // superadmin/admin no tienen "Reportes" como pestaña propia (a
+    // diferencia de manager) — SPEC-010 sí les da acceso, así que se
+    // agrega aquí para no dejarlos sin forma de llegar a ReportsScreen.
     case UserRole.superadmin:
     case UserRole.admin:
+      return const [
+        NavItemConfig(
+          label: 'Huéspedes en casa',
+          icon: Icons.people_outline,
+          route: AppRoutes.inHouse,
+        ),
+        NavItemConfig(
+          label: 'Reportes',
+          icon: Icons.bar_chart_outlined,
+          route: AppRoutes.reports,
+        ),
+        NavItemConfig(
+          label: 'Notificaciones',
+          icon: Icons.notifications_outlined,
+          route: AppRoutes.notifications,
+        ),
+        NavItemConfig(
+          label: 'Perfil',
+          icon: Icons.person_outline,
+          route: AppRoutes.profile,
+        ),
+      ];
     case UserRole.manager:
     case UserRole.receptionist:
       return const [

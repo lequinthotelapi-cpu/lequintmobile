@@ -53,6 +53,16 @@ class GuestAccountFirebaseRepository implements GuestAccountRepository {
   }
 
   @override
+  Future<List<GuestAccount>> getAll() async {
+    try {
+      final query = await _firestore.collection('guestAccounts').get();
+      return query.docs.map(GuestAccount.fromFirestore).toList();
+    } on FirebaseException catch (e) {
+      throw mapFirestoreException(e);
+    }
+  }
+
+  @override
   Future<void> addCharge({
     required String accountId,
     required List<AddChargeItem> items,

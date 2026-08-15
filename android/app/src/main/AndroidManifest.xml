@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- Android 13+ requiere este permiso además del runtime request que
+         hace firebase_messaging al llamar requestPermission() — ver
+         TASK-012 / SPEC-009. -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <application
         android:label="lequintmobile"
         android:name="${applicationName}"
@@ -30,6 +34,11 @@
         <meta-data
             android:name="flutterEmbedding"
             android:value="2" />
+        <!-- Canal de notificaciones de importancia alta creado en
+             MainActivity.kt — ver TASK-012 / SPEC-009. -->
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="le_quint_high_importance" />
     </application>
     <!-- Required to query activities that can process text, see:
          https://developer.android.com/training/package-visibility and

@@ -3,7 +3,7 @@
 **ID**: TASK-016
 **SPEC**: SPEC-003 (sección housekeeping manager), F-015
 **Dependencias**: TASK-008
-**Estado**: PENDING
+**Estado**: DONE
 
 ---
 

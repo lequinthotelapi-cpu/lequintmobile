@@ -3,7 +3,13 @@
 **ID**: TASK-012
 **SPEC**: SPEC-009
 **Dependencias**: TASK-004, TASK-005
-**Estado**: PENDING
+**Estado**: CÓDIGO COMPLETO — pendiente configuración manual de APNs
+
+> Todo el código (FCMService, NotificationsScreen, banner in-app, canal
+> Android, entitlements iOS) está implementado y probado. Falta un paso
+> externo que solo el usuario puede hacer: generar la APNs Auth Key en
+> Apple Developer Console y subirla a Firebase Console, luego probar en
+> un dispositivo físico. Ver conversación — acordado retomarlo después.
 
 ---
 

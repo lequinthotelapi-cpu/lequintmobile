@@ -3,7 +3,7 @@
 **ID**: TASK-006
 **SPEC**: Todos (componentes base)
 **Dependencias**: TASK-001
-**Estado**: PENDING
+**Estado**: DONE
 
 ---
 

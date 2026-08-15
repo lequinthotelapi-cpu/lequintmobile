@@ -7,6 +7,7 @@ import 'core/constants/app_colors.dart';
 import 'core/constants/app_config.dart';
 import 'firebase_options.dart';
 import 'presentation/shell/app_router.dart';
+import 'presentation/shell/notifications_bootstrap.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -39,6 +40,8 @@ class LeQuintApp extends ConsumerWidget {
         ),
       ),
       routerConfig: ref.watch(appRouterProvider),
+      builder: (context, child) =>
+          NotificationsBootstrap(child: child ?? const SizedBox.shrink()),
     );
   }
 }

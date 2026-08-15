@@ -27,6 +27,16 @@ class HousekeepingFirebaseRepository implements HousekeepingRepository {
   }
 
   @override
+  Stream<List<HousekeepingTask>> getAllByEmployee(String employeeId) {
+    final stream = _firestore
+        .collection('housekeepingTasks')
+        .where('assignedTo', isEqualTo: employeeId)
+        .snapshots()
+        .map((snap) => snap.docs.map(HousekeepingTask.fromFirestore).toList());
+    return mapFirestoreStreamErrors(stream);
+  }
+
+  @override
   Stream<List<HousekeepingTask>> getAll() {
     final stream = _firestore
         .collection('housekeepingTasks')

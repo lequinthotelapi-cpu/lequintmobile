@@ -3,7 +3,7 @@
 **ID**: TASK-015
 **SPEC**: SPEC-012
 **Dependencias**: TASK-004, TASK-005
-**Estado**: PENDING
+**Estado**: DONE
 
 ---
 

@@ -5,6 +5,12 @@ abstract interface class HousekeepingRepository {
   /// Tareas asignadas a [employeeId] con `status in [pending, in-progress]`.
   Stream<List<HousekeepingTask>> getByEmployee(String employeeId);
 
+  /// Todas las tareas de [employeeId], sin filtrar por status — usado por
+  /// el resumen "Completadas hoy" del dashboard housekeeper (TASK-007).
+  /// Una sola condición de igualdad (sin índice compuesto adicional),
+  /// a diferencia de [getAll] mantiene el dashboard housekeeper liviano.
+  Stream<List<HousekeepingTask>> getAllByEmployee(String employeeId);
+
   /// Todas las tareas (para manager/admin — supervisión).
   Stream<List<HousekeepingTask>> getAll();
 

@@ -8,14 +8,30 @@ import '../task_labels.dart';
 /// Tarjeta de tarea en MyTasksScreen — ver docs/ux/components.md
 /// "TaskCard".
 class TaskCard extends StatelessWidget {
-  const TaskCard({required this.task, required this.onTap, super.key});
+  const TaskCard({
+    required this.task,
+    required this.onTap,
+    this.assignedToName,
+    this.isOverdue = false,
+    super.key,
+  });
 
   final HousekeepingTask task;
   final VoidCallback onTap;
 
+  /// Nombre del empleado asignado — solo se usa en AllTasksScreen (TASK-016,
+  /// supervisión); en MyTasksScreen es redundante (siempre es "yo") y no se
+  /// pasa.
+  final String? assignedToName;
+
+  /// Resalta el borde izquierdo cuando la tarea está vencida (TASK-016).
+  final bool isOverdue;
+
   @override
   Widget build(BuildContext context) {
-    final priorityColor = PriorityChip.colorFor(task.priority);
+    final priorityColor = isOverdue
+        ? AppColors.error
+        : PriorityChip.colorFor(task.priority);
 
     return Material(
       color: Colors.transparent,
@@ -25,7 +41,11 @@ class TaskCard extends StatelessWidget {
         child: DecoratedBox(
           decoration: BoxDecoration(
             color: AppColors.glassSecondary,
-            border: Border.all(color: AppColors.glassSecondaryBorder),
+            border: Border.all(
+              color: isOverdue
+                  ? AppColors.error.withValues(alpha: 0.5)
+                  : AppColors.glassSecondaryBorder,
+            ),
             borderRadius: BorderRadius.circular(16),
           ),
           child: IntrinsicHeight(
@@ -91,6 +111,27 @@ class TaskCard extends StatelessWidget {
                             ),
                           ],
                         ),
+                        if (assignedToName != null) ...[
+                          const SizedBox(height: 6),
+                          Text(
+                            'Asignado a: $assignedToName',
+                            style: const TextStyle(
+                              color: AppColors.textTertiary,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                        if (isOverdue) ...[
+                          const SizedBox(height: 6),
+                          const Text(
+                            'Vencida',
+                            style: TextStyle(
+                              color: AppColors.error,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                        ],
                       ],
                     ),
                   ),

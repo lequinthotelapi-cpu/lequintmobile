@@ -12,6 +12,8 @@ import '../front_desk/arrival_detail_screen.dart';
 import '../front_desk/arrivals_screen.dart';
 import '../front_desk/departure_detail_screen.dart';
 import '../front_desk/departures_screen.dart';
+import '../front_desk/front_desk_screen.dart';
+import '../front_desk/in_house_screen.dart';
 import '../housekeeping/all_tasks_screen.dart';
 import '../housekeeping/complete_task_screen.dart';
 import '../housekeeping/my_tasks_screen.dart';
@@ -117,6 +119,10 @@ Widget _screenForTabRoute(String route, String label) {
       return const ArrivalsScreen();
     case AppRoutes.departures:
       return const DeparturesScreen();
+    case AppRoutes.frontDesk:
+      return const FrontDeskScreen();
+    case AppRoutes.inHouse:
+      return const InHouseScreen();
     case AppRoutes.rooms:
       return const RoomsScreen();
     case AppRoutes.notifications:

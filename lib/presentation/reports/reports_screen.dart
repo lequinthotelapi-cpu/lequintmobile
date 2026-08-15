@@ -111,6 +111,8 @@ class ReportsScreen extends ConsumerWidget {
                           const SizedBox(height: 8),
                           Text(
                             kpis.revenue.toCurrency(),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                             style: const TextStyle(
                               color: AppColors.textPrimary,
                               fontSize: 36,
@@ -119,13 +121,7 @@ class ReportsScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: 24),
-                          GridView.count(
-                            crossAxisCount: 2,
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            mainAxisSpacing: 12,
-                            crossAxisSpacing: 12,
-                            childAspectRatio: 1.8,
+                          KPIGrid(
                             children: [
                               KPICard(
                                 value:

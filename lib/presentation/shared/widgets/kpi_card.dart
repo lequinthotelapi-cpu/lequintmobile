@@ -32,6 +32,8 @@ class KPICard extends StatelessWidget {
           ],
           Text(
             value,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: AppColors.textPrimary,
               fontSize: 28,
@@ -42,6 +44,8 @@ class KPICard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: const TextStyle(
               color: AppColors.textSecondary,
               fontSize: 12,
@@ -49,6 +53,39 @@ class KPICard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+/// Grilla de 2 columnas para [KPICard] con alto intrínseco (cada fila mide
+/// lo que su contenido necesita) — a diferencia de `GridView.count` con
+/// `childAspectRatio`, que impone una altura fija y desborda en pantallas
+/// angostas cuando el contenido (ej. montos largos) no entra en esa altura.
+class KPIGrid extends StatelessWidget {
+  const KPIGrid({required this.children, super.key});
+
+  final List<Widget> children;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        for (var i = 0; i < children.length; i += 2) ...[
+          if (i > 0) const SizedBox(height: 12),
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(child: children[i]),
+              const SizedBox(width: 12),
+              Expanded(
+                child: i + 1 < children.length
+                    ? children[i + 1]
+                    : const SizedBox.shrink(),
+              ),
+            ],
+          ),
+        ],
+      ],
     );
   }
 }

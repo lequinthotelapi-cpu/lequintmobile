@@ -22,13 +22,7 @@ class OperationalKpisCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GridView.count(
-      crossAxisCount: 2,
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      mainAxisSpacing: 12,
-      crossAxisSpacing: 12,
-      childAspectRatio: 1.6,
+    return KPIGrid(
       children: [
         KPICard(
           value: '$arrivalsToday',

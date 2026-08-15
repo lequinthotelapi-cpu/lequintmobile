@@ -67,3 +67,34 @@ docs/design-references/
 Use them as visual direction, not as literal screenshots to copy.
 
 You may improve UI/UX decisions within the Design System.
+
+## VISUAL QUALITY
+
+The application must not look like a generic Flutter or Material dashboard.
+
+The Design System and visual references in docs/design-references/
+are mandatory visual inputs.
+
+When implementing UI, inspect the actual reference images and derive
+concrete visual decisions from them.
+
+Do not reduce the visual direction to colors, border radius and shadows.
+
+The interface should have:
+
+- clear visual identity
+- depth
+- hierarchy
+- sophisticated surfaces
+- intentional interaction
+- purposeful motion
+- refined typography
+- premium hospitality character
+
+When a screen is visually weak, redesign it rather than preserving
+the existing implementation.
+
+Use screenshots to visually inspect and critique the implementation
+before considering UI work complete.
+
+ZERO visible Flutter overflow errors are acceptable.

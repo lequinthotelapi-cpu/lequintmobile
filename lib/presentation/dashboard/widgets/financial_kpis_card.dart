@@ -26,6 +26,8 @@ class FinancialKpisCard extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           kpis.revenue.toCurrency(),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
           style: const TextStyle(
             color: AppColors.textPrimary,
             fontSize: 28,
@@ -34,13 +36,7 @@ class FinancialKpisCard extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 12),
-        GridView.count(
-          crossAxisCount: 2,
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          mainAxisSpacing: 12,
-          crossAxisSpacing: 12,
-          childAspectRatio: 1.8,
+        KPIGrid(
           children: [
             KPICard(
               value: '${kpis.occupancyRate.toStringAsFixed(1)}%',

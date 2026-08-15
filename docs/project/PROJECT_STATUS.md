@@ -9,7 +9,7 @@
 
 App móvil Flutter para el personal del hotel Le Quint. Complementa el sistema web existente (Angular + Firebase). No es una copia del sistema web — selecciona las funcionalidades con mayor valor en movilidad.
 
-**Estado**: MVP IMPLEMENTADO — las 16 TASKs completadas (TASK-001 a TASK-016). Único pendiente: configuración manual de APNs para push en iOS (ver TASK-012) y verificación en dispositivos físicos.
+**Estado**: MVP IMPLEMENTADO — las 16 TASKs completadas (TASK-001 a TASK-016), más `InHouseScreen` y `FrontDeskScreen` (referenciadas en navigation.md/architecture.md desde el inicio pero sin TASK propia asignada — quedaron como placeholder hasta ahora). Único pendiente: configuración manual de APNs para push en iOS (ver TASK-012) y verificación en dispositivos físicos.
 
 ---
 

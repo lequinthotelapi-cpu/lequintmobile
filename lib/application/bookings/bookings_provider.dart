@@ -23,6 +23,14 @@ final departuresProvider = StreamProvider.autoDispose<List<Booking>>((ref) {
       .getDeparturesForDate(DateTime.now());
 });
 
+/// Huéspedes en casa (`status == checked-in`, sin filtrar por fecha) — ver
+/// SPEC-011 "InHouseScreen".
+final inHouseProvider = StreamProvider.autoDispose<List<Booking>>((ref) {
+  return ref.watch(bookingRepositoryProvider).getByStatus([
+    BookingStatus.checkedIn,
+  ]);
+});
+
 Booking? findBookingById(List<Booking> bookings, String id) {
   for (final booking in bookings) {
     if (booking.id == id) return booking;
